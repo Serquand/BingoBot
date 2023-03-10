@@ -3,19 +3,14 @@ const { DataTypes } = require("sequelize");
 const User = require("./User");
 const Quote = require("./Quote");
 
-module.exports = sequelize.define("SubmittingQuote", {
-    idSubmitting: {
+const SentenceInGrid = sequelize.define("SentenceInGrid", {
+    idSentenceInGrid: {
         type: DataTypes.INTEGER, 
-        primaryKey: true,
         autoIncrement: true, 
-    },
+        primaryKey: true,    
+    }, 
 
-    at: {
-        type: DataTypes.STRING(22),
-        defaultValue: "0"
-    },          
-
-    by: {
+    idGrid: {
         type: DataTypes.STRING(22),
         references: {
             model: User, 
@@ -23,13 +18,23 @@ module.exports = sequelize.define("SubmittingQuote", {
         }
     },
 
-    quote: {
+    idQuote: {
         type: DataTypes.INTEGER, 
         references: {
             model: Quote, 
             key: "quoteId"
         }
+    },
+
+    validity: {
+        type: DataTypes.BOOLEAN, 
+        defaultValue: false
+    }, 
+
+    isValidAt: {
+        type: DataTypes.STRING(22),
+        default: "0"
     }
-}, {
-    timestamps: false
-});
+}, { timestamps: false })
+
+module.exports = SentenceInGrid;

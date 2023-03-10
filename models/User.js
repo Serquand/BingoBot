@@ -13,6 +13,11 @@ module.exports = sequelize.define("User", {
         type: DataTypes.INTEGER,
         allowNull: false, 
         unique: true, 
+    },
+
+    winAt: {
+        type: DataTypes.STRING(22),
+        defaultValue: "0"
     }
 }, {
     timestamps: false

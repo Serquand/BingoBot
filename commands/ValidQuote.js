@@ -14,7 +14,31 @@ module.exports = {
         }
     ],
     runSlash: async (client, interaction) => {
-        interaction.reply("Nous travaillons là-dessus !");
-        console.log(interaction.options.getString("quote"));
+        const userRole = interaction.member.roles.member._roles;
+        const sentence = interaction.options.get("quote").value;
+
+        if(!userRole.includes(process.env.STAFF_ROLE_ID)) {
+            return interaction.reply({
+                content: "Vous n'avez pas les permissions pour l'utilisation de cette commande",
+                ephemeral: true
+            });
+        }
+
+        const res = await Quote.update(
+            { at: Date.now() },
+            { where: { sentence } }
+        );
+
+        if(res[0] == 0) {
+            return interaction.reply({
+                content: "Aucune citation n'a pu être trouvée !",
+                ephemeral: true
+            })
+        } else {
+            return interaction.reply({
+                content: "La citation a bien été modifiée !",
+                ephemeral: true
+            })
+        }
     }
 }
