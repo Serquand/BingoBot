@@ -7,14 +7,15 @@ const SentenceInGrid = sequelize.define("SentenceInGrid", {
     idSentenceInGrid: {
         type: DataTypes.INTEGER, 
         autoIncrement: true, 
-        primaryKey: true,    
+        primaryKey: true,   
+        autoIncrement: true,  
     }, 
 
     idGrid: {
-        type: DataTypes.STRING(22),
+        type: DataTypes.INTEGER,
         references: {
             model: User, 
-            key: "discordId"
+            key: "gridNumber"
         }
     },
 

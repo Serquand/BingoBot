@@ -12,7 +12,7 @@ module.exports = sequelize.define("User", {
     gridNumber: {
         type: DataTypes.INTEGER,
         allowNull: false, 
-        unique: true, 
+        unique: true,
     },
 
     winAt: {

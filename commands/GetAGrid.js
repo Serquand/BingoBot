@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const SentenceInGrid = require("../models/SentenceInGrid");
+const informations = require("../informations.json");
 const submitGridMessage = require("../utils/Message/SubmitGrid");
 
 module.exports = {
@@ -21,7 +23,18 @@ module.exports = {
 
         // Assign the grid to the user 
         const grids = client.allGrids[numberGridsSelected];
-        User.create({ discordId, gridNumber: numberGridsSelected });
+        console.log(grids);
+        await User.create({ discordId, gridNumber: numberGridsSelected });
+
+        const gridSentences = new Array(0);
+        for(let i = 0; i < informations.numberRefPerGrid; i++) {
+            console.log(i);
+            gridSentences.push({
+                idGrid: numberGridsSelected, 
+                idQuote: informations.refs.indexOf(grids[i]) + 1
+            })
+        }   
+        SentenceInGrid.bulkCreate(gridSentences);
 
         // Submit the grid to the user
         interaction.reply({ content: submitGridMessage(grids), ephemeral: true })
