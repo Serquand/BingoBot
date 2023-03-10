@@ -20,7 +20,7 @@ const main = async () => {
     await eventHandlers(client);
     await setup();
     generateGrids(informations.refs, informations.numberRefPerGrid, 0, client);
-    findAlreadyTakenGrids(client.numberAlreadyTaken);
+    findAlreadyTakenGrids(client.numberAlreadyTaken, client.allGrids);
 }
 
 main();
