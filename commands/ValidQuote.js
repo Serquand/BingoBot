@@ -1,4 +1,3 @@
-const Op = require("sequelize").Op;
 const Quote = require("../models/Quote");
 
 module.exports = {

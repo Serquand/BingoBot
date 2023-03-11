@@ -1,3 +1,5 @@
+const findAllNonSay = require('../utils/Quote/FindAllNonSay');
+
 module.exports = {
     name: "interactionCreate", 
     once: false, 
@@ -6,6 +8,16 @@ module.exports = {
             const cmd = client.commands.get(interaction.commandName);
             if(!cmd) return interaction.reply("Cette commande n'existe pas");
             cmd.runSlash(client, interaction);
+        }
+
+        if(interaction.isAutocomplete()) {
+            const content = interaction.options.getFocused();
+            let allQuotes = await findAllNonSay();
+            allQuotes = allQuotes.filter(q => {
+                return q.toLowerCase().includes(content.toLowerCase())
+            }).slice(0, 6);
+
+            await interaction.respond(allQuotes.map(allQuotes => ({ name: allQuotes, value: allQuotes })));
         }
 
         const devGuild = await client.guilds.cache.get(process.env.idServ);
