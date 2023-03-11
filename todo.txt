@@ -1,7 +1,7 @@
 [*] - Création d'une grille
 [*] - Regarder les grilles déjà utilisées
-[ ] - Génération d'un nombre aléatoire
-[ ] - Check si le nombre aléatoire est dans la grille
+[*] - Génération d'un nombre aléatoire
+[*] - Check si le nombre aléatoire est dans la grille
 [ ] - Soumission d'une citation (Admin)
 [ ] - Soumission d'une citation (Membre)
 [ ] - Check si la citation était la seule sur la grille

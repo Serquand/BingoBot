@@ -2,6 +2,7 @@ const User = require("../models/User");
 const SentenceInGrid = require("../models/SentenceInGrid");
 const informations = require("../informations.json");
 const submitGridMessage = require("../utils/Message/SubmitGrid");
+const findAGoodGridIndex = require("../utils/grids/FindAGoodGridIndex");
 
 module.exports = {
     name: "get_a_grid",
@@ -22,17 +23,15 @@ module.exports = {
         const numberGridsSelected = (await User.findAll()).length;
 
         // Assign the grid to the user 
-        const grids = client.allGrids[numberGridsSelected];
-        console.log(grids);
+        const userGridIndex = findAGoodGridIndex(client.allGrids.length, client.numberAlreadyTaken)
+        client.numberAlreadyTaken.push(userGridIndex)
+        const grids = client.allGrids[userGridIndex];
         await User.create({ discordId, gridNumber: numberGridsSelected });
 
+        // Add the grid in the database
         const gridSentences = new Array(0);
         for(let i = 0; i < informations.numberRefPerGrid; i++) {
-            console.log(i);
-            gridSentences.push({
-                idGrid: numberGridsSelected, 
-                idQuote: informations.refs.indexOf(grids[i]) + 1
-            })
+            gridSentences.push({ idGrid: numberGridsSelected, idQuote: informations.refs.indexOf(grids[i]) + 1 })
         }   
         SentenceInGrid.bulkCreate(gridSentences);
 
