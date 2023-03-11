@@ -5,6 +5,9 @@
 [*] - Soumission d'une citation (Admin)
 [*] - Génère les options d'autocomplétion Admin
 [ ] - Soumission d'une citation (Membre)
+[*] - Génère les options d'autocomplétion Membre
 [ ] - Check si la citation était la seule sur la grille
 [ ] - Si oui, valide la grille
 [ ] - Récupération de la liste des vainqueurs dans l'ordre (Admin)
+[ ] - list 
+[ ] - help

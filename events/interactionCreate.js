@@ -1,4 +1,5 @@
 const findAllNonSay = require('../utils/Quote/FindAllNonSay');
+const findMineNonSay = require("../utils/Quote/findMineNonSay");
 
 module.exports = {
     name: "interactionCreate", 
@@ -12,12 +13,26 @@ module.exports = {
 
         if(interaction.isAutocomplete()) {
             const content = interaction.options.getFocused();
-            let allQuotes = await findAllNonSay();
+            let allQuotes;
+
+            switch(interaction.commandName) {
+                case "submit_quote":
+                    allQuotes = await findMineNonSay(interaction.user.id);
+                    break;
+                
+                case  "valid_quote":
+                    allQuotes = await findAllNonSay();  
+                    break;
+                
+                default: 
+                    return;
+            }
+
             allQuotes = allQuotes.filter(q => {
                 return q.toLowerCase().includes(content.toLowerCase())
             }).slice(0, 6);
 
-            await interaction.respond(allQuotes.map(allQuotes => ({ name: allQuotes, value: allQuotes })));
+            await interaction.respond(allQuotes.map(allQuotes => ({ name: allQuotes, value: allQuotes }))); 
         }
 
         const devGuild = await client.guilds.cache.get(process.env.idServ);

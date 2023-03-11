@@ -6,8 +6,6 @@ const findAllNonSay = async () => {
     const quote = await Quote.findAll({ where: { at: "0" } });
     for (const q of quote) allNonSay.push(q.dataValues.sentence);
 
-    console.log(allNonSay);
-
     return allNonSay;
 }
 
