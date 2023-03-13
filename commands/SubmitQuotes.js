@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const sequelize = require("../models/Connection");
 const Quote = require("../models/Quote");
 const SentenceInGrid = require("../models/SentenceInGrid");
+const User = require("../models/User");
 
 module.exports = {
     name: "submit_quote",
@@ -49,44 +50,65 @@ module.exports = {
             })
             return;
         } 
+
+        // Check si le joueur a déjà validé la citation
+        const isAlreadySubmitted = (await sequelize.query(`
+            SELECT COUNT(*) AS c FROM SentenceInGrids S, Users U, Quotes Q 
+            WHERE 
+                s.idQuote = q.quoteId AND   
+                s.idGrid = u.gridNumber AND
+                q.sentence = :quote AND
+                u.discordId = :discordId AND
+                (S.isValidAt IS NULL OR S.isValidAt = "0")
+        `, { replacements: { discordId, quote } }))[0][0].c;
+
+        if(isAlreadySubmitted == 0) {
+            return interaction.reply({
+                content: "Vous avez déjà validé cette citation",
+                ephemeral: true
+            })
+        }   
         
         // Valide la citation
-        await sequelize.query(`
-            UPDATE SentenceInGrids AS S 
-            INNER JOIN Quotes ON Quotes.quoteId = SentenceInGrids.idQuote
-            INNER JOIN Users ON Users.gridNumber = SentenceInGrids.idGrid
-            SET isValidAt = :ts 
-            WHERE Quotes.sentence = :quote 
-            AND Users.discordId = :discordId
-        `, { replacements: { quote, ts: Date.now().toString(), discordId } });
+        const idSentenceInGrid = (await sequelize.query(`
+            SELECT idSentenceInGrid 
+            FROM SentenceInGrids AS s, Quotes AS q, Users AS u
+            WHERE 
+                s.idQuote = q.quoteId AND   
+                s.idGrid = u.gridNumber AND
+                q.sentence = :quote AND
+                u.discordId = :discordId
+        `, { replacements: { quote, discordId } }))[0][0].idSentenceInGrid;
 
+        await SentenceInGrid.update(
+            { isValidAt: Date.now() }, 
+            { where: { idSentenceInGrid } }
+        )
 
         // Récupère la liste des citations restantes dans la grille
-        const quoteStillAlive = await sequelize.query(`
-            SELECT sentence FROM Users U, SentenceInGrid S
+        const quoteStillAlive = (await sequelize.query(`
+            SELECT sentence FROM Users U, SentenceInGrids S, Quotes q
             WHERE U.discordId = :discordId 
             AND U.gridNumber = S.idGrid 
-            AND S.isValidAt <> "0"
-        `)[0];
+            AND (S.isValidAt IS NULL OR S.isValidAt = "0")
+            AND S.idQuote = q.quoteId
+        `, { replacements: { discordId } }))[0];
 
-        console.log(quoteStillAlive);
-
-        // Si il ne reste plus aucune citation, envoie un message de félicitations.
+        // Si il ne reste plus aucune citation, envoie un message de félicitations et change l'heure de la grille.
         if(quoteStillAlive.length == 0) {
+            User.update({ winAt: Date.now() }, { discordId });
+            
             return interaction.reply({
                 content: "Bravo ! Vous avez gagné !", 
                 ephemeral: true
-            })
+            });
         }
 
-        for (const k in quoteStillAlive) {
-            console.log(k);
-            quoteStillAlive[k] = quoteStillAlive[k].sentence
-        }
+        for (const k in quoteStillAlive) quoteStillAlive[k] = quoteStillAlive[k].sentence
 
         // Renvoie un message d'information
         return interaction.reply({
-            content: quoteStillAlive.join("\n"),
+            content: "Bravo, vous avez validé cette citation ! Il vous reste : \n" + quoteStillAlive.join("\n"),
             ephemeral: true
         })
     }

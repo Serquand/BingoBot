@@ -28,7 +28,6 @@ module.exports = {
                     return;
             }
 
-            console.log(allQuotes);
             allQuotes = allQuotes.filter(q => {
                 return q.toLowerCase().includes(content.toLowerCase())
             }).slice(0, 6);

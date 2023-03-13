@@ -10,7 +10,6 @@ const findMineNonSay = async (discordId) => {
         AND S.idQuote = q.quoteId
     `, { replacements: { discordId } }))[0];
     for (const quote of res) allMineNonSay.push(quote.sentence);
-    console.log(allMineNonSay);
 
     return allMineNonSay;
 }

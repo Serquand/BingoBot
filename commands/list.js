@@ -4,7 +4,6 @@ module.exports = {
     name: "list",
     description: "List all citation and their status",
     runSlash: async (client, interaction) => {
-        console.log(interaction);
         const allQuotes = await Quote.findAll({
             attributes: ["sentence", "at"]
         });
