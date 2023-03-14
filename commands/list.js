@@ -4,6 +4,7 @@ module.exports = {
     name: "list",
     description: "List all citation and their status",
     runSlash: async (client, interaction) => {
+        console.log(interaction.user.username + " asks for the quotation list !");
         const allQuotes = await Quote.findAll({
             attributes: ["sentence", "at"]
         });
@@ -15,7 +16,7 @@ module.exports = {
             else stilledQuote.push(allQuotes[i].dataValues.sentence);
         }
 
-        return interaction.reply({
+        return await interaction.reply({
             content: "**Liste des citations validées :**\n" + passedQuote.join("\n") + "\n\n**Liste des citations non validées :**\n" + stilledQuote.join("\n"),
             ephemeral: true
         })

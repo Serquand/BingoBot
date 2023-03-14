@@ -17,6 +17,7 @@ module.exports = {
         }
     ],
     runSlash: async (client, interaction) => {
+        console.log(interaction.user.username + " asks for submitting a quote !");
         // Récupère la citation
         const quote = interaction.options.getString("quote");
         const discordId = interaction.user.id;
@@ -30,7 +31,7 @@ module.exports = {
             AND u.discordId = :discordId
         `, { replacements: { quote, discordId } }))[0][0].c
         if(res == 0) { // Si il ne l'a pas, renvoie un message d'erreur
-            interaction.reply({
+            await interaction.reply({
                 content: "Cette citation n'est pas sur votre grille !",
                 ephemeral: true
             });
@@ -44,11 +45,10 @@ module.exports = {
         
         // Si elle n'est pas validé, renvoie un message d'erreur
         if(resValidation == "0") {
-            interaction.reply({
+            return await interaction.reply({
                 content: "La citation n'est pas validée !",
                 ephemeral: true
             })
-            return;
         } 
 
         // Check si le joueur a déjà validé la citation
@@ -63,7 +63,7 @@ module.exports = {
         `, { replacements: { discordId, quote } }))[0][0].c;
 
         if(isAlreadySubmitted == 0) {
-            return interaction.reply({
+            return await interaction.reply({
                 content: "Vous avez déjà validé cette citation",
                 ephemeral: true
             })
@@ -98,7 +98,7 @@ module.exports = {
         if(quoteStillAlive.length == 0) {
             User.update({ winAt: Date.now() }, { where: { discordId }});
             
-            return interaction.reply({
+            return await interaction.reply({
                 content: "Bravo ! Vous avez gagné !", 
                 ephemeral: true
             });
@@ -107,7 +107,7 @@ module.exports = {
         for (const k in quoteStillAlive) quoteStillAlive[k] = quoteStillAlive[k].sentence
 
         // Renvoie un message d'information
-        return interaction.reply({
+        return await interaction.reply({
             content: "Bravo, vous avez validé cette citation ! Il vous reste : \n" + quoteStillAlive.join("\n"),
             ephemeral: true
         })

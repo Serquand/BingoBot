@@ -8,12 +8,13 @@ module.exports = {
     name: "get_a_grid",
     description: "Ask for a grid. Words only once by user.",
     runSlash: async (client, interaction) => {
+        console.log(interaction.user.username + " asks for a new grid !");
         const discordId = interaction.user.id;
 
         // Check if the user has a grid
         const res = await User.findOne({ where: { discordId } })
         if(res != null) {
-            return interaction.reply({
+            return await interaction.reply({
                 content: "Vous ne pouvez avoir qu'une seule grille !",
                 ephemeral: true
             })
@@ -36,6 +37,6 @@ module.exports = {
         SentenceInGrid.bulkCreate(gridSentences);
 
         // Submit the grid to the user
-        interaction.reply({ content: submitGridMessage(grids), ephemeral: true })
+        return await interaction.reply({ content: submitGridMessage(grids), ephemeral: true })
     }
 }

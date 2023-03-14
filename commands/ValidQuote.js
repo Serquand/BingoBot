@@ -17,11 +17,13 @@ module.exports = {
         const sentence = interaction.options.get("quote").value;
 
         if(!userRole.includes(process.env.STAFF_ROLE_ID)) {
-            return interaction.reply({
+            return await interaction.reply({
                 content: "Vous n'avez pas les permissions pour l'utilisation de cette commande",
                 ephemeral: true
             });
         }
+
+        console.log(interaction.user.username + " asks for validating a quote !");
 
         const res = await Quote.update(
             { at: Date.now() },
@@ -29,12 +31,12 @@ module.exports = {
         );
 
         if(res[0] == 0) {
-            return interaction.reply({
+            return await interaction.reply({
                 content: "Aucune citation n'a pu être trouvée !",
                 ephemeral: true
             })
         } else {
-            return interaction.reply({
+            return await interaction.reply({
                 content: "La citation a bien été modifiée !",
                 ephemeral: true
             })
