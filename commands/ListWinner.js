@@ -25,7 +25,7 @@ module.exports = {
             });
         }
 
-        for(let i = 0; i< listWinner.length; i++) listWinner[i] = listWinner[i].dataValues.discordId;
+        for(let i = 0; i < listWinner.length; i++) listWinner[i] = listWinner[i].discordId;
 
         return interaction.reply({
             content: "Voici la liste des gagnants :\n<@" + listWinner.join(">\n<@") + ">",

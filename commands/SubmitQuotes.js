@@ -96,7 +96,7 @@ module.exports = {
 
         // Si il ne reste plus aucune citation, envoie un message de félicitations et change l'heure de la grille.
         if(quoteStillAlive.length == 0) {
-            User.update({ winAt: Date.now() }, { discordId });
+            User.update({ winAt: Date.now() }, { where: { discordId }});
             
             return interaction.reply({
                 content: "Bravo ! Vous avez gagné !", 
